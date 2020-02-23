@@ -262,4 +262,7 @@ footer {
   .hero-section .row {
     flex-direction: column-reverse;
   }
+  .hero-section .hero-img {
+    margin: 3em auto;
+  }
 }
