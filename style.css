@@ -179,11 +179,10 @@ nav .nav-link {
 .project-card {
   background-color: #27292b;
   padding: 1em;
-  margin: 1em 0;
+  margin: 1em auto;
   width: 100%;
   max-width: 500px;
-  max-height: 500px;
-  height: auto;
+  height: 275px;
 }
 
 .project-card-image {
@@ -235,10 +234,6 @@ footer {
   align-items: center;
   flex-direction: column;
   border-radius: 3px 0 0 3px;
-}
-
-.float-contact .reveal:hover {
-  display: block !important;
 }
 
 .floating-contact li {
