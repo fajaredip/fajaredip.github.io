@@ -1,419 +1,563 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fajar Edi Prabowo | Frontend Engineer</title>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Fajar Edi Prabowo | Frontend Engineer</title>
+    <!-- Google Fonts: Inter (Body & Headers), JetBrains Mono (Code/Tech) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-	<!-- Google Fonts: Outfit (Headings) & Roboto (Body) -->
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link
-		href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&family=Roboto:wght@400;500&display=swap"
-		rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
+            colors: {
+              zinc: {
+                50: "#fafafa",
+                100: "#f4f4f5",
+                200: "#e4e4e7",
+                300: "#d4d4d8",
+                400: "#a1a1aa",
+                500: "#71717a",
+                600: "#52525b",
+                700: "#3f3f46",
+                800: "#27272a",
+                900: "#18181b",
+                950: "#09090b",
+              },
+              accent: {
+                light: "#3b82f6", // Professional blue
+                dark: "#60a5fa",
+              },
+            },
+          },
+        },
+      };
+    </script>
 
-	<!-- Tailwind CSS -->
-	<script src="https://cdn.tailwindcss.com"></script>
-	<script>
-		tailwind.config = {
-			darkMode: 'class', // Enables dark mode via a class on the <html> tag
-			theme: {
-				extend: {
-					fontFamily: {
-						sans: ['Roboto', 'sans-serif'],
-						display: ['Outfit', 'sans-serif'],
-					},
-					colors: {
-						emerald: {
-							50: '#ecfdf5',
-							100: '#d1fae5',
-							400: '#34d399',
-							500: '#10b981',
-							600: '#059669',
-							800: '#065f46',
-							900: '#064e3b',
-						},
-						slate: {
-							50: '#f8fafc',
-							800: '#1e293b',
-							900: '#0f172a',
-							950: '#020617',
-						}
-					}
-				}
-			}
-		}
-	</script>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-	<!-- Vue 3 -->
-	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300 antialiased selection:bg-accent-light/20 selection:text-accent-light"
+  >
+    <div id="app" v-cloak class="relative min-h-screen">
+      <!-- Minimal Navigation -->
+      <nav
+        class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-900 transition-colors duration-300"
+      >
+        <div
+          class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center"
+        >
+          <a
+            href="#home"
+            @click.prevent="scrollTo('home')"
+            class="font-semibold text-lg tracking-tight"
+          >
+            FAJAREDIP
+          </a>
 
-	<style>
-		/* Hide app until Vue mounts to prevent flashing */
-		[v-cloak] {
-			display: none;
-		}
+          <div class="flex items-center gap-6">
+            <div class="hidden md:flex gap-6 text-sm font-medium">
+              <button
+                @click="scrollTo('about')"
+                class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+              >
+                Profile
+              </button>
+              <button
+                @click="scrollTo('projects')"
+                class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+              >
+                Work
+              </button>
+            </div>
 
-		/* Subtle grid background pattern */
-		.bg-grid {
-			background-size: 30px 30px;
-			background-image:
-				linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-				linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
-		}
+            <div
+              class="w-px h-4 bg-zinc-300 dark:bg-zinc-800 hidden md:block"
+            ></div>
 
-		.dark .bg-grid {
-			background-image:
-				linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-				linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-		}
-	</style>
-</head>
+            <!-- Theme Toggle Button -->
+            <button
+              @click="toggleTheme"
+              class="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-zinc-600 dark:text-zinc-400 focus:outline-none"
+              aria-label="Toggle Dark Mode"
+            >
+              <svg
+                v-if="isDark"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="M4.93 4.93l1.41 1.41"></path>
+                <path d="M17.66 17.66l1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="M6.34 17.66l-1.41 1.41"></path>
+                <path d="M19.07 4.93l-1.41 1.41"></path>
+              </svg>
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
 
-<body
-	class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100">
+      <main class="relative z-10">
+        <!-- Calm & Professional Hero Section -->
+        <section
+          id="home"
+          class="pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-7xl mx-auto flex flex-col justify-center min-h-[80vh]"
+        >
+          <div
+            class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center w-full"
+          >
+            <div class="lg:col-span-7">
+              <p
+                class="font-mono text-accent-light dark:text-accent-dark font-medium mb-6 text-sm uppercase tracking-wider"
+              >
+                Frontend Engineer
+              </p>
 
-	<div id="app" v-cloak class="relative min-h-screen">
+              <h1
+                class="text-5xl md:text-7xl lg:text-[4rem] xl:text-[4.5rem] font-bold text-zinc-900 dark:text-white mb-8 leading-[1.1] tracking-tight"
+              >
+                Building professional web architectures.
+              </h1>
 
-		<!-- Background Grid Pattern -->
-		<div class="absolute inset-0 z-0 pointer-events-none bg-grid opacity-50"></div>
+              <p
+                class="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-12 leading-relaxed font-normal max-w-xl"
+              >
+                I specialize in creating clean, scalable, and high-performance
+                user interfaces. My primary focus is bridging complex business
+                logic with accessible design using the Vue.js & Nuxt ecosystem.
+              </p>
 
-		<!-- Navigation -->
-		<nav
-			class="fixed top-0 w-full z-50 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
-			<div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-				<a href="#home" @click.prevent="scrollTo('home')"
-					class="font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
-					FAJAR<span class="text-emerald-500">.DEV</span>
-				</a>
+              <div class="flex items-center gap-4">
+                <button
+                  @click="scrollTo('projects')"
+                  class="px-6 py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-sm font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-sm"
+                >
+                  View Selected Work
+                </button>
+                <a
+                  href="mailto:fajaredip@gmail.com"
+                  class="px-6 py-3 bg-transparent border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 text-zinc-900 dark:text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  Get in Touch
+                </a>
+              </div>
+            </div>
 
-				<div class="flex items-center gap-8">
-					<div class="hidden md:flex gap-6 text-sm font-medium">
-						<button @click="scrollTo('about')"
-							class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">About</button>
-						<button @click="scrollTo('projects')"
-							class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Work</button>
-					</div>
+            <!-- Hero Image & Accent -->
+            <div class="lg:col-span-5 hidden lg:block relative">
+              <div
+                class="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl group"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80"
+                  alt="Developer Workspace"
+                  class="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 scale-105 group-hover:scale-100"
+                />
+                <div
+                  class="absolute inset-0 bg-accent-light/10 dark:bg-accent-dark/10 mix-blend-overlay pointer-events-none"
+                ></div>
+              </div>
 
-					<div class="w-px h-6 bg-slate-300 dark:bg-slate-700 hidden md:block"></div>
+              <!-- Floating Accent Badge -->
+              <div
+                class="absolute -bottom-6 -left-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-5 py-4 rounded-xl shadow-lg flex items-center gap-4 transition-transform duration-500 hover:-translate-y-2"
+              >
+                <div
+                  class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-900 dark:text-white"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m18 16 4-4-4-4" />
+                    <path d="m6 8-4 4 4 4" />
+                    <path d="m14.5 4-5 16" />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="text-sm font-bold text-zinc-900 dark:text-white leading-none mb-1"
+                  >
+                    Clean Code
+                  </p>
+                  <p class="text-xs text-zinc-500 font-mono">Vue Ecosystem</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-					<!-- Theme Toggle Button -->
-					<button @click="toggleTheme"
-						class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400 focus:outline-none"
-						aria-label="Toggle Dark Mode">
-						<!-- Sun Icon (shows in dark mode) -->
-						<svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-							fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-							stroke-linejoin="round">
-							<circle cx="12" cy="12" r="4"></circle>
-							<path d="M12 2v2"></path>
-							<path d="M12 20v2"></path>
-							<path d="M4.93 4.93l1.41 1.41"></path>
-							<path d="M17.66 17.66l1.41 1.41"></path>
-							<path d="M2 12h2"></path>
-							<path d="M20 12h2"></path>
-							<path d="M6.34 17.66l-1.41 1.41"></path>
-							<path d="M19.07 4.93l-1.41 1.41"></path>
-						</svg>
-						<!-- Moon Icon (shows in light mode) -->
-						<svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-							fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-							stroke-linejoin="round">
-							<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-						</svg>
-					</button>
-				</div>
-			</div>
-		</nav>
+        <!-- Interactive Terminal Section (Kept from Neon theme) -->
+        <section id="about" class="py-24 px-6 max-w-6xl mx-auto">
+          <div
+            class="rounded-xl overflow-hidden bg-[#18181b] shadow-2xl border border-zinc-800/50"
+          >
+            <!-- Terminal Header -->
+            <div
+              class="bg-[#27272a] px-4 py-3 flex items-center gap-2 border-b border-zinc-800/50"
+            >
+              <div class="w-3 h-3 rounded-full bg-[#ef4444]"></div>
+              <div class="w-3 h-3 rounded-full bg-[#f59e0b]"></div>
+              <div class="w-3 h-3 rounded-full bg-[#10b981]"></div>
+              <div
+                class="mx-auto font-mono text-xs text-zinc-400 tracking-wider"
+              >
+                fajar@workspace:~
+              </div>
+            </div>
+            <!-- Terminal Body -->
+            <div
+              class="p-6 md:p-8 font-mono text-sm leading-relaxed text-zinc-300 overflow-x-auto"
+            >
+              <p class="mb-4 text-blue-400">
+                ➜ <span class="text-white">~</span> ./fetch_profile.sh
+              </p>
+              <p class="mb-2">
+                <span class="text-emerald-400"
+                  >Loading developer profile...</span
+                >
+              </p>
+              <p class="mb-6"><span class="text-emerald-400">Success!</span></p>
 
-		<main class="relative z-10">
-			<!-- Hero Section -->
-			<section id="home"
-				class="pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-6xl mx-auto flex flex-col justify-center min-h-[90vh]">
-				<div class="max-w-4xl">
-					<div
-						class="inline-flex items-center gap-2 px-3 py-1 mb-8 border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium text-sm rounded">
-						<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-						Available for new opportunities
-					</div>
+              <div class="text-zinc-400">
+                <span class="text-blue-400">const</span>
+                <span class="text-white">profile</span> = {<br />
+                &nbsp;&nbsp;<span class="text-blue-300">name:</span>
+                <span class="text-emerald-300">'Fajar Edi Prabowo'</span>,<br />
+                &nbsp;&nbsp;<span class="text-blue-300">role:</span>
+                <span class="text-emerald-300">'Frontend Engineer'</span>,<br />
+                &nbsp;&nbsp;<span class="text-blue-300">location:</span>
+                <span class="text-emerald-300">'Indonesia'</span>,<br />
+                <br />
+                &nbsp;&nbsp;<span class="text-blue-300">skills:</span> {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400"
+                  >frameworks:</span
+                >
+                [<span class="text-emerald-300">'Vue.js'</span>,
+                <span class="text-emerald-300">'Nuxt 3'</span>,
+                <span class="text-emerald-300">'React'</span>],<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400"
+                  >languages:</span
+                >
+                [<span class="text-emerald-300">'JavaScript (ES6+)'</span>,
+                <span class="text-emerald-300">'TypeScript'</span>,
+                <span class="text-emerald-300">'HTML/CSS'</span>],<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400"
+                  >styling:</span
+                >
+                [<span class="text-emerald-300">'Tailwind CSS'</span>,
+                <span class="text-emerald-300">'SASS'</span>],<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400"
+                  >tools:</span
+                >
+                [<span class="text-emerald-300">'Git'</span>,
+                <span class="text-emerald-300">'Vite'</span>,
+                <span class="text-emerald-300">'REST APIs'</span>]<br />
+                &nbsp;&nbsp;},<br />
+                <br />
+                &nbsp;&nbsp;<span class="text-blue-300">focus:</span>
+                <span class="text-emerald-300"
+                  >'Enterprise Architecture & Web Performance'</span
+                ><br />
+                };
+              </div>
+              <p class="mt-6 text-blue-400 animate-pulse">
+                ➜ <span class="text-white">~</span>
+                <span class="w-2 h-4 bg-white inline-block align-middle"></span>
+              </p>
+            </div>
+          </div>
+        </section>
 
-					<h1
-						class="font-display text-5xl md:text-7xl lg:text-8xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
-						Architecting <br class="hidden md:block" />
-						<span
-							class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-400 dark:to-emerald-600">
-							Robust
-						</span> Web Solutions.
-					</h1>
+        <!-- Clean, Simple Projects Section -->
+        <section
+          id="projects"
+          class="py-32 px-6 border-t border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950/50"
+        >
+          <div class="max-w-7xl mx-auto">
+            <div class="mb-20">
+              <h2
+                class="text-3xl font-bold text-zinc-900 dark:text-white mb-4 tracking-tight"
+              >
+                Selected Work
+              </h2>
+              <p class="text-zinc-600 dark:text-zinc-400 max-w-2xl text-lg">
+                A showcase of enterprise platforms, recruitment dashboards, and
+                high-performance corporate architectures.
+              </p>
+            </div>
 
-					<p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl leading-relaxed">
-						I'm <span class="text-emerald-400 dark:to-emerald-600">Fajar Edi Prabowo</span>, a <span class="text-emerald-400 dark:to-emerald-600">Frontend Engineer</span> specializing in the Vue ecosystem. I build scalable,
-						highly performant, and enterprise-grade user interfaces.
-					</p>
+            <div class="grid md:grid-cols-2 gap-16">
+              <!-- Project Cards -->
+              <article
+                v-for="project in projects"
+                :key="project.title"
+                class="group flex flex-col"
+              >
+                <!-- Clean Image Container -->
+                <a
+                  :href="project.link"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="relative w-full aspect-video rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 mb-6 block"
+                >
+                  <img
+                    :src="project.image"
+                    :alt="project.title"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div
+                    class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"
+                  ></div>
+                </a>
 
-					<div class="flex flex-wrap items-center gap-4">
-						<button @click="scrollTo('projects')"
-							class="px-8 py-3.5 bg-slate-900 dark:bg-emerald-500 hover:bg-slate-800 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-medium rounded transition-colors shadow-sm">
-							View Portfolio
-						</button>
-						<a href="mailto:hello@example.com"
-							class="px-8 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 text-slate-900 dark:text-white font-medium rounded transition-colors">
-							Contact Me
-						</a>
-					</div>
-				</div>
-			</section>
+                <!-- Simple Typography Details -->
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3
+                      class="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-accent-light dark:group-hover:text-accent-dark transition-colors"
+                    >
+                      {{ project.title }}
+                    </h3>
+                    <a
+                      :href="project.link"
+                      target="_blank"
+                      class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M7 7h10v10" />
+                        <path d="M7 17 17 7" />
+                      </svg>
+                    </a>
+                  </div>
+                  <p
+                    class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4"
+                  >
+                    {{ project.description }}
+                  </p>
+                  <div class="flex flex-wrap gap-2 mt-auto">
+                    <span
+                      v-for="tech in project.tech"
+                      :key="tech"
+                      class="font-mono text-[11px] font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded"
+                    >
+                      {{ tech }}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
 
-			<!-- About & Expertise (Bento Box Layout) -->
-			<section id="about"
-				class="py-24 px-6 border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50">
-				<div class="max-w-6xl mx-auto">
-					<div class="flex items-center gap-4 mb-12">
-						<h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white">About & Expertise
-						</h2>
-						<div class="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
-					</div>
+        <!-- Professional Minimal Footer -->
+        <footer
+          class="py-32 border-t border-zinc-200 dark:border-zinc-900 px-6"
+        >
+          <div class="max-w-7xl mx-auto flex flex-col items-center">
+            <p
+              class="font-mono text-zinc-500 dark:text-zinc-500 text-sm uppercase tracking-wider mb-6"
+            >
+              Open for new opportunities
+            </p>
 
-					<div class="grid md:grid-cols-3 gap-6">
-						<!-- Profile Card (Spans 2 cols) -->
-						<div
-							class="md:col-span-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 md:p-10 rounded-xl shadow-sm">
-							<h3 class="font-display text-2xl font-bold mb-6 text-slate-900 dark:text-white">Professional
-								Profile</h3>
-							<div class="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-								<p>
-									Hello. I'm Fajar, a dedicated frontend developer focused on bridging complex backend
-									systems with intuitive, accessible user experiences. With a strong foundation in
-									corporate platforms, I ensure that architecture scales gracefully.
-								</p>
-								<p>
-									My daily toolkit revolves heavily around <strong
-										class="text-slate-900 dark:text-emerald-400 font-semibold">Vue.js</strong> and
-									<strong class="text-slate-900 dark:text-emerald-400 font-semibold">Nuxt.js</strong>.
-									I leverage Server-Side Rendering (SSR) capabilities to deliver applications that are
-									not only blazingly fast but also highly optimized for search engines.
-								</p>
-							</div>
-						</div>
+            <a
+              href="mailto:fajaredip@gmail.com"
+              class="text-4xl md:text-6xl font-bold text-zinc-900 dark:text-white hover:text-accent-light dark:hover:text-accent-dark transition-colors mb-12 tracking-tight"
+            >
+              fajaredip@gmail.com
+            </a>
 
-						<!-- Core Stack -->
-						<div
-							class="bg-slate-900 dark:bg-slate-800 border border-slate-800 p-8 md:p-10 rounded-xl text-white shadow-sm flex flex-col justify-center">
-							<h3 class="font-display text-xl font-bold mb-8 text-emerald-400">Core Stack</h3>
-							<ul class="space-y-6">
-								<li class="flex items-center gap-4">
-									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
-									<span class="font-medium text-slate-200">Vue.js / Nuxt 3</span>
-								</li>
-								<li class="flex items-center gap-4">
-									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
-									<span class="font-medium text-slate-200">JavaScript / TypeScript</span>
-								</li>
-								<li class="flex items-center gap-4">
-									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
-									<span class="font-medium text-slate-200">Tailwind CSS / SASS</span>
-								</li>
-								<li class="flex items-center gap-4">
-									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
-									<span class="font-medium text-slate-200">REST API Integration</span>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<!-- Secondary Skills (Full Width) -->
-					<div id="skills"
-						class="mt-6 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-xl shadow-sm">
-						<div class="flex flex-wrap items-center gap-x-8 gap-y-4">
-							<span class="font-display font-bold text-slate-900 dark:text-white">Tools & Workflow:</span>
-							<div class="flex flex-wrap gap-2">
-								<span
-									v-for="tool in ['Git', 'Vite', 'Webpack', 'NPM/Yarn', 'Responsive Design', 'SEO Optimization']"
-									:key="tool"
-									class="px-3 py-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm font-medium rounded">
-									{{ tool }}
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
+            <div class="flex gap-8 mb-16">
+              <a
+                href="https://github.com/fajaredip"
+                target="_blank"
+                class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors text-sm font-medium"
+              >
+                GitHub
+              </a>
+              <a
+                href="#"
+                class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors text-sm font-medium"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="#"
+                class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors text-sm font-medium"
+              >
+                Resume
+              </a>
+            </div>
 
-			<!-- Projects Section -->
-			<section id="projects" class="py-32 px-6">
-				<div class="max-w-6xl mx-auto">
-					<div class="flex items-center gap-4 mb-16">
-						<h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white">Selected Works</h2>
-						<div class="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
-					</div>
+            <p class="text-zinc-400 dark:text-zinc-600 text-xs font-mono">
+              &copy; 2026 Fajar Edi Prabowo.
+            </p>
+          </div>
+        </footer>
+      </main>
+    </div>
 
-					<div class="grid md:grid-cols-2 gap-8">
-						<a v-for="project in projects" :key="project.title" :href="project.link" target="_blank"
-							rel="noreferrer"
-							class="group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-md dark:hover:shadow-emerald-900/20 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
-							<!-- Subtle highlight effect on hover -->
-							<div
-								class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-							</div>
+    <script>
+      const { createApp, ref, onMounted } = Vue;
 
-							<div class="relative z-10 flex flex-col h-full">
-								<div class="flex justify-between items-start mb-6">
-									<h3
-										class="font-display text-2xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-										{{ project.title }}
-									</h3>
-									<svg class="text-slate-400 group-hover:text-emerald-500 transition-colors"
-										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-										stroke-linejoin="round">
-										<path d="M7 7h10v10" />
-										<path d="M7 17 17 7" />
-									</svg>
-								</div>
-								<p class="text-slate-600 dark:text-slate-400 mb-8 flex-grow leading-relaxed">
-									{{ project.description }}
-								</p>
-								<div class="flex flex-wrap gap-2 mt-auto">
-									<span v-for="tech in project.tech" :key="tech"
-										class="px-3 py-1 bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 text-xs font-bold rounded uppercase tracking-wider">
-										{{ tech }}
-									</span>
-								</div>
-							</div>
-						</a>
-					</div>
-				</div>
-			</section>
+      createApp({
+        setup() {
+          const isDark = ref(false);
 
-			<!-- Footer -->
-			<footer
-				class="py-16 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-center px-6">
-				<div class="max-w-4xl mx-auto flex flex-col items-center">
-					<h2 class="font-display text-2xl font-bold text-slate-900 dark:text-white mb-6">Let's build
-						something great.</h2>
-					<a href="mailto:fajaredip@gmail.com"
-						class="text-emerald-600 dark:text-emerald-400 font-medium hover:underline mb-12 text-lg">
-						fajaredip@gmail.com
-					</a>
+          const applyTheme = (dark) => {
+            if (typeof document !== "undefined") {
+              if (dark) {
+                document.documentElement.classList.add("dark");
+              } else {
+                document.documentElement.classList.remove("dark");
+              }
+            }
+          };
 
-					<div class="flex gap-8 mb-12">
-						<a href="https://github.com/fajaredip" target="_blank"
-							class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
-							<span class="sr-only">GitHub</span>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<path
-									d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-								<path d="M9 18c-4.51 2-5-2-7-2" />
-							</svg>
-						</a>
-						<a href="#" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
-							<span class="sr-only">LinkedIn</span>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<path
-									d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-								<rect width="4" height="12" x="2" y="9" />
-								<circle cx="4" cy="4" r="2" />
-							</svg>
-						</a>
-					</div>
-					<p class="text-slate-500 dark:text-slate-500 text-sm">
-						&copy; 2026 Fajar Edi Prabowo. Built with Vue 3 & Tailwind CSS.
-					</p>
-				</div>
-			</footer>
-		</main>
-	</div>
+          const toggleTheme = () => {
+            isDark.value = !isDark.value;
+            applyTheme(isDark.value);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("theme", isDark.value ? "dark" : "light");
+            }
+          };
 
-	<script>
-		const { createApp, ref, onMounted } = Vue;
+          onMounted(() => {
+            if (typeof window !== "undefined") {
+              const savedTheme = localStorage.getItem("theme");
+              if (savedTheme) {
+                isDark.value = savedTheme === "dark";
+              } else {
+                // Default to system preference
+                isDark.value = window.matchMedia(
+                  "(prefers-color-scheme: dark)",
+                ).matches;
+              }
+              applyTheme(isDark.value);
+            }
+          });
 
-		createApp({
-			setup() {
-				// --- Theme Management ---
-				const isDark = ref(false)
+          const scrollTo = (id) => {
+            if (typeof window !== "undefined") {
+              const element = document.getElementById(id);
+              if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+              }
+            }
+          };
 
-				const applyTheme = (dark) => {
-					if (typeof document !== 'undefined') {
-						if (dark) {
-							document.documentElement.classList.add('dark');
-						} else {
-							document.documentElement.classList.remove('dark');
-						}
-					}
-				}
+          // Project Data
+          const projects = [
+            {
+              title: "E-Systems Platform",
+              description:
+                "Enterprise management system orchestrating complex employee onboarding flows, HR documentation, and highly secure workflow automation for large teams.",
+              tech: ["Vue.js", "Nuxt 3", "REST API"],
+              link: "https://onboarding.elabram.com",
+              image:
+                "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+            },
+            {
+              title: "E-Hire Portal",
+              description:
+                "Streamlined recruitment platform connecting employers with top talent. Designed with real-time status tracking, applicant filtering, and robust admin panels.",
+              tech: ["Vue 3", "Tailwind CSS", "State"],
+              link: "https://ehire.elabram.com",
+              image:
+                "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
+            },
+            {
+              title: "E-Jobs Network",
+              description:
+                "A public-facing job portal optimized for absolute performance and search engines, ensuring a frictionless application experience for job seekers.",
+              tech: ["Nuxt.js", "SEO", "Core Web Vitals"],
+              link: "https://job.elabram.com/",
+              image:
+                "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+            },
+            {
+              title: "Elabram Corporate",
+              description:
+                "High-performance corporate landing page architected for rapid load times, featuring engaging animations and clear communication of B2B services.",
+              tech: ["Frontend Arch", "HTML5", "CSS3"],
+              link: "https://elabram.com/",
+              image:
+                "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+            },
+          ];
 
-				const toggleTheme = () => {
-					isDark.value = !isDark.value;
-					applyTheme(isDark.value);
-					if (typeof window !== 'undefined') {
-						localStorage.setItem('theme', isDark.value ? 'dark' : 'light');
-					}
-				}
-
-				onMounted(() => {
-					// Initialize theme based on localStorage or system preference on load
-					if (typeof window !== 'undefined') {
-						const savedTheme = localStorage.getItem('theme');
-						if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-							isDark.value = true;
-						} else {
-							isDark.value = false;
-						}
-						applyTheme(isDark.value);
-					}
-				})
-
-				// --- Smooth Scrolling ---
-				const scrollTo = (id) => {
-					if (typeof window !== 'undefined') {
-						const element = document.getElementById(id);
-						if (element) {
-							element.scrollIntoView({ behavior: 'smooth' });
-						}
-					}
-				}
-
-				// --- Data ---
-				const projects = [
-					{
-						title: 'E-Systems',
-						description: 'Enterprise management system for complex employee onboarding, internal HR documentation, and workflow automation.',
-						tech: ['Vue.js', 'Nuxt 3', 'SASS', 'REST API'],
-						link: 'https://onboarding.elabram.com'
-					},
-					{
-						title: 'E-Staff',
-						description: 'Streamlined recruitment platform connecting employers with talent, featuring real-time status tracking and admin dashboards.',
-						tech: ['Vue 3', 'Tailwind CSS', 'State Management'],
-						link: 'https://estaff.elabram.com'
-					},
-					{
-						title: 'E-Jobs',
-						description: 'Public-facing job portal optimized for performance and search engines, delivering a seamless application experience.',
-						tech: ['Nuxt.js', 'SEO Optimization', 'Core Web Vitals'],
-						link: 'https://job.elabram.com/'
-					},
-					{
-						title: 'Elabram Website',
-						description: 'High-performance corporate landing page architected for rapid load times and clear communication of B2B services.',
-						tech: ['Frontend Architecture', 'HTML5', 'CSS3'],
-						link: 'https://elabram.com/'
-					}
-				]
-
-				return {
-					isDark,
-					toggleTheme,
-					scrollTo,
-					projects
-				}
-			}
-		}).mount('#app')
-	</script>
-</body>
-
+          return {
+            isDark,
+            toggleTheme,
+            scrollTo,
+            projects,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
 </html>
