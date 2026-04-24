@@ -1,295 +1,419 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Portfolio</title>
-		<link
-			href="https://fonts.googleapis.com/css?family=Rubik:400,500,700&display=swap"
-			rel="stylesheet" />
-		<link
-			rel="stylesheet"
-			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="style.css" />
-	</head>
-	<body>
-		<nav class="navbar navbar-expand-lg navbar-dark">
-			<div class="container">
-				<a class="navbar-brand" href="#" style="font-size: 20px">FAJAREDIP</a>
-				<button
-					class="navbar-toggler light bg-dark"
-					type="button"
-					data-toggle="collapse"
-					data-target="#navbarSupportedContent"
-					aria-controls="navbarSupportedContent"
-					aria-expanded="false"
-					aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+<html lang="en" class="scroll-smooth">
 
-				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav ml-auto">
-						<a class="nav-item nav-link" href="#" id="home">Home</a>
-						<a class="nav-item nav-link" href="#about-section" id="about">About</a>
-						<a class="nav-item nav-link" href="#skill-section" id="skill">Skills</a>
-						<a class="nav-item nav-link" href="#project-section" id="project">Projects</a>
-					</ul>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Fajar Edi Prabowo | Frontend Engineer</title>
+
+	<!-- Google Fonts: Outfit (Headings) & Roboto (Body) -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&family=Roboto:wght@400;500&display=swap"
+		rel="stylesheet">
+
+	<!-- Tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			darkMode: 'class', // Enables dark mode via a class on the <html> tag
+			theme: {
+				extend: {
+					fontFamily: {
+						sans: ['Roboto', 'sans-serif'],
+						display: ['Outfit', 'sans-serif'],
+					},
+					colors: {
+						emerald: {
+							50: '#ecfdf5',
+							100: '#d1fae5',
+							400: '#34d399',
+							500: '#10b981',
+							600: '#059669',
+							800: '#065f46',
+							900: '#064e3b',
+						},
+						slate: {
+							50: '#f8fafc',
+							800: '#1e293b',
+							900: '#0f172a',
+							950: '#020617',
+						}
+					}
+				}
+			}
+		}
+	</script>
+
+	<!-- Vue 3 -->
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+	<style>
+		/* Hide app until Vue mounts to prevent flashing */
+		[v-cloak] {
+			display: none;
+		}
+
+		/* Subtle grid background pattern */
+		.bg-grid {
+			background-size: 30px 30px;
+			background-image:
+				linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+				linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+		}
+
+		.dark .bg-grid {
+			background-image:
+				linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+				linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+		}
+	</style>
+</head>
+
+<body
+	class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100">
+
+	<div id="app" v-cloak class="relative min-h-screen">
+
+		<!-- Background Grid Pattern -->
+		<div class="absolute inset-0 z-0 pointer-events-none bg-grid opacity-50"></div>
+
+		<!-- Navigation -->
+		<nav
+			class="fixed top-0 w-full z-50 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+			<div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+				<a href="#home" @click.prevent="scrollTo('home')"
+					class="font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
+					FAJAR<span class="text-emerald-500">.DEV</span>
+				</a>
+
+				<div class="flex items-center gap-8">
+					<div class="hidden md:flex gap-6 text-sm font-medium">
+						<button @click="scrollTo('about')"
+							class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">About</button>
+						<button @click="scrollTo('projects')"
+							class="text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Work</button>
+					</div>
+
+					<div class="w-px h-6 bg-slate-300 dark:bg-slate-700 hidden md:block"></div>
+
+					<!-- Theme Toggle Button -->
+					<button @click="toggleTheme"
+						class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400 focus:outline-none"
+						aria-label="Toggle Dark Mode">
+						<!-- Sun Icon (shows in dark mode) -->
+						<svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+							fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+							stroke-linejoin="round">
+							<circle cx="12" cy="12" r="4"></circle>
+							<path d="M12 2v2"></path>
+							<path d="M12 20v2"></path>
+							<path d="M4.93 4.93l1.41 1.41"></path>
+							<path d="M17.66 17.66l1.41 1.41"></path>
+							<path d="M2 12h2"></path>
+							<path d="M20 12h2"></path>
+							<path d="M6.34 17.66l-1.41 1.41"></path>
+							<path d="M19.07 4.93l-1.41 1.41"></path>
+						</svg>
+						<!-- Moon Icon (shows in light mode) -->
+						<svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+							fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+							stroke-linejoin="round">
+							<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+						</svg>
+					</button>
 				</div>
 			</div>
 		</nav>
 
-		<main>
-			<ul class="floating-contact">
-				<li>
-					<a href="#">
-						<!-- <div>0818 0840 2761</div> -->
-						<i class="fas fa-phone-alt"></i>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-						<!-- <div>fajaredip@gmail.com</div> -->
-						<i class="fas fa-envelope"></i>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-						<i class="fab fa-linkedin-in"></i>
-					</a>
-				</li>
-			</ul>
+		<main class="relative z-10">
+			<!-- Hero Section -->
+			<section id="home"
+				class="pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-6xl mx-auto flex flex-col justify-center min-h-[90vh]">
+				<div class="max-w-4xl">
+					<div
+						class="inline-flex items-center gap-2 px-3 py-1 mb-8 border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium text-sm rounded">
+						<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+						Available for new opportunities
+					</div>
 
-			<section class="hero-section">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="hero-text">
-								<span class="header-line"></span>
-								<h1>Let's make your site looks amazing!</h1>
+					<h1
+						class="font-display text-5xl md:text-7xl lg:text-8xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
+						Architecting <br class="hidden md:block" />
+						<span
+							class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-400 dark:to-emerald-600">
+							Robust
+						</span> Web Solutions.
+					</h1>
+
+					<p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl leading-relaxed">
+						I'm <span class="text-emerald-400 dark:to-emerald-600">Fajar Edi Prabowo</span>, a <span class="text-emerald-400 dark:to-emerald-600">Frontend Engineer</span> specializing in the Vue ecosystem. I build scalable,
+						highly performant, and enterprise-grade user interfaces.
+					</p>
+
+					<div class="flex flex-wrap items-center gap-4">
+						<button @click="scrollTo('projects')"
+							class="px-8 py-3.5 bg-slate-900 dark:bg-emerald-500 hover:bg-slate-800 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-medium rounded transition-colors shadow-sm">
+							View Portfolio
+						</button>
+						<a href="mailto:hello@example.com"
+							class="px-8 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 text-slate-900 dark:text-white font-medium rounded transition-colors">
+							Contact Me
+						</a>
+					</div>
+				</div>
+			</section>
+
+			<!-- About & Expertise (Bento Box Layout) -->
+			<section id="about"
+				class="py-24 px-6 border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50">
+				<div class="max-w-6xl mx-auto">
+					<div class="flex items-center gap-4 mb-12">
+						<h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white">About & Expertise
+						</h2>
+						<div class="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
+					</div>
+
+					<div class="grid md:grid-cols-3 gap-6">
+						<!-- Profile Card (Spans 2 cols) -->
+						<div
+							class="md:col-span-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 md:p-10 rounded-xl shadow-sm">
+							<h3 class="font-display text-2xl font-bold mb-6 text-slate-900 dark:text-white">Professional
+								Profile</h3>
+							<div class="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
 								<p>
-									Hi, my name is <span>Fajar</span>. I'm a <span>frontend developer</span> with a
-									high curiosity of web designing.
+									Hello. I'm Fajar, a dedicated frontend developer focused on bridging complex backend
+									systems with intuitive, accessible user experiences. With a strong foundation in
+									corporate platforms, I ensure that architecture scales gracefully.
+								</p>
+								<p>
+									My daily toolkit revolves heavily around <strong
+										class="text-slate-900 dark:text-emerald-400 font-semibold">Vue.js</strong> and
+									<strong class="text-slate-900 dark:text-emerald-400 font-semibold">Nuxt.js</strong>.
+									I leverage Server-Side Rendering (SSR) capabilities to deliver applications that are
+									not only blazingly fast but also highly optimized for search engines.
 								</p>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="hero-img">
-								<img src="./asset/hero-img.jpg" alt="Hero Image" />
+
+						<!-- Core Stack -->
+						<div
+							class="bg-slate-900 dark:bg-slate-800 border border-slate-800 p-8 md:p-10 rounded-xl text-white shadow-sm flex flex-col justify-center">
+							<h3 class="font-display text-xl font-bold mb-8 text-emerald-400">Core Stack</h3>
+							<ul class="space-y-6">
+								<li class="flex items-center gap-4">
+									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+									<span class="font-medium text-slate-200">Vue.js / Nuxt 3</span>
+								</li>
+								<li class="flex items-center gap-4">
+									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+									<span class="font-medium text-slate-200">JavaScript / TypeScript</span>
+								</li>
+								<li class="flex items-center gap-4">
+									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+									<span class="font-medium text-slate-200">Tailwind CSS / SASS</span>
+								</li>
+								<li class="flex items-center gap-4">
+									<div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+									<span class="font-medium text-slate-200">REST API Integration</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- Secondary Skills (Full Width) -->
+					<div id="skills"
+						class="mt-6 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-xl shadow-sm">
+						<div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+							<span class="font-display font-bold text-slate-900 dark:text-white">Tools & Workflow:</span>
+							<div class="flex flex-wrap gap-2">
+								<span
+									v-for="tool in ['Git', 'Vite', 'Webpack', 'NPM/Yarn', 'Responsive Design', 'SEO Optimization']"
+									:key="tool"
+									class="px-3 py-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm font-medium rounded">
+									{{ tool }}
+								</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
-			<section id="about-section" class="about-section">
-				<div class="container">
-					<div class="text-center mb-5">
-						<h1>A Little About Me</h1>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="about-img">
-								<div class="img-frame neu-up">
-									<div class="actual-img"></div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="about-content">
-								<div class="about-text">
-									<div class="mb-3">
-										Lorem ipsum dolor sit amet consectetur, adipisicing elit. Qui doloremque commodi
-										consequuntur ut eius ex velit quaerat saepe obcaecati voluptatum?
-									</div>
-									<div class="mb-3">
-										Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos ipsa rerum labore
-										maxime adipisci accusantium?
-									</div>
-									<div>
-										Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores error
-										repudiandae, temporibus et nisi quia id nostrum facere quos ab quam laudantium
-										consectetur, delectus nulla quae! Soluta officiis eveniet et.
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<section id="skill-section" class="skill-section">
-				<div class="container">
-					<div class="text-center mb-5">
-						<span class="header-line"></span>
-						<h1>Skills</h1>
+
+			<!-- Projects Section -->
+			<section id="projects" class="py-32 px-6">
+				<div class="max-w-6xl mx-auto">
+					<div class="flex items-center gap-4 mb-16">
+						<h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white">Selected Works</h2>
+						<div class="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
 					</div>
 
-					<div class="row mb-5">
-						<div class="col-md-4">
-							<div class="skill-list">
-								<div class="skill-img">
-									<img src="./asset/html.svg" alt="HTML 5" />
-								</div>
-								<div class="skill-name">HTML 5</div>
+					<div class="grid md:grid-cols-2 gap-8">
+						<a v-for="project in projects" :key="project.title" :href="project.link" target="_blank"
+							rel="noreferrer"
+							class="group block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-8 hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-md dark:hover:shadow-emerald-900/20 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
+							<!-- Subtle highlight effect on hover -->
+							<div
+								class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="skill-list">
-								<div class="skill-img">
-									<img src="./asset/css.svg" alt="CSS" />
+
+							<div class="relative z-10 flex flex-col h-full">
+								<div class="flex justify-between items-start mb-6">
+									<h3
+										class="font-display text-2xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+										{{ project.title }}
+									</h3>
+									<svg class="text-slate-400 group-hover:text-emerald-500 transition-colors"
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path d="M7 7h10v10" />
+										<path d="M7 17 17 7" />
+									</svg>
 								</div>
-								<div class="skill-name">CSS</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="skill-list">
-								<div class="skill-img">
-									<img src="./asset/sass.svg" alt="SASS" />
+								<p class="text-slate-600 dark:text-slate-400 mb-8 flex-grow leading-relaxed">
+									{{ project.description }}
+								</p>
+								<div class="flex flex-wrap gap-2 mt-auto">
+									<span v-for="tech in project.tech" :key="tech"
+										class="px-3 py-1 bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 text-xs font-bold rounded uppercase tracking-wider">
+										{{ tech }}
+									</span>
 								</div>
-								<div class="skill-name">SASS</div>
 							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-4">
-							<div class="skill-list">
-								<div class="skill-img">
-									<img src="./asset/js.svg" alt="Javascript" />
-								</div>
-								<div class="skill-name">Javascript</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="skill-list">
-								<div class="skill-img">
-									<img src="./asset/vue.svg" alt="Vue" />
-								</div>
-								<div class="skill-name">Vue Js</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="skill-list">
-								<div class="skill-img">
-									<img src="./asset/nuxt.svg" alt="Nuxt" />
-								</div>
-								<div class="skill-name">Nuxt Js</div>
-							</div>
-						</div>
+						</a>
 					</div>
 				</div>
 			</section>
-			<section id="project-section" class="project-section">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="text-center mb-5">
-								<span class="header-line"></span>
-								<h1>Projects</h1>
-							</div>
-						</div>
+
+			<!-- Footer -->
+			<footer
+				class="py-16 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-center px-6">
+				<div class="max-w-4xl mx-auto flex flex-col items-center">
+					<h2 class="font-display text-2xl font-bold text-slate-900 dark:text-white mb-6">Let's build
+						something great.</h2>
+					<a href="mailto:fajaredip@gmail.com"
+						class="text-emerald-600 dark:text-emerald-400 font-medium hover:underline mb-12 text-lg">
+						fajaredip@gmail.com
+					</a>
+
+					<div class="flex gap-8 mb-12">
+						<a href="https://github.com/fajaredip" target="_blank"
+							class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+							<span class="sr-only">GitHub</span>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<path
+									d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+								<path d="M9 18c-4.51 2-5-2-7-2" />
+							</svg>
+						</a>
+						<a href="#" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+							<span class="sr-only">LinkedIn</span>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<path
+									d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+								<rect width="4" height="12" x="2" y="9" />
+								<circle cx="4" cy="4" r="2" />
+							</svg>
+						</a>
 					</div>
-					<div class="row project-cards">
-						<div class="col-md-6">
-							<div class="project-card">
-								<a href="https://onboarding.elabram.com" target="_blank">
-									<div class="project-card-image">
-										<img src="./asset/portfolio/e-system.png" alt="E-Systems" />
-									</div>
-									<div class="project-card-title">E-Systems</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="project-card">
-								<a href="https://ehire.elabram.com" target="_blank">
-									<div class="project-card-image">
-										<img src="./asset/portfolio/e-hire.png" alt="E-Hire" />
-									</div>
-									<div class="project-card-title">E-Hire</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="project-card">
-								<a href="https://job.elabram.com/">
-									<div class="project-card-image">
-										<img src="./asset/portfolio/e-job.png" alt="E-Jobs" />
-									</div>
-									<div class="project-card-title">E-Jobs</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="project-card">
-								<a href="https://elabram.com/">
-									<div class="project-card-image">
-										<img src="./asset/portfolio/elabram-website.png" alt="Elabram Website" />
-									</div>
-									<div class="project-card-title">Elabram Website</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="project-card">
-								<a href="https://elabramtelco.com/">
-									<div class="project-card-image">
-										<img src="./asset/portfolio/elabram-telco.png" alt="Elabram Telco" />
-									</div>
-									<div class="project-card-title">Elabram Telco</div>
-								</a>
-							</div>
-						</div>
-					</div>
+					<p class="text-slate-500 dark:text-slate-500 text-sm">
+						&copy; 2026 Fajar Edi Prabowo. Built with Vue 3 & Tailwind CSS.
+					</p>
 				</div>
-			</section>
+			</footer>
 		</main>
+	</div>
 
-		<footer class="py-2">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12 text-center">
-						<div class="contact-item">© Fajar Edi Prabowo</div>
-					</div>
-				</div>
-			</div>
-		</footer>
+	<script>
+		const { createApp, ref, onMounted } = Vue;
 
-		<!-- Script -->
-		<script
-			src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-			crossorigin="anonymous"></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-			integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-			crossorigin="anonymous"></script>
-		<script
-			src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-			integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-			crossorigin="anonymous"></script>
-		<script src="https://kit.fontawesome.com/0db2cbd175.js" crossorigin="anonymous"></script>
+		createApp({
+			setup() {
+				// --- Theme Management ---
+				const isDark = ref(false)
 
-		<!-- <script>
-      $(document).ready(function() {
-        $("#skill").click(function(event) {
-          event.preventDefault();
+				const applyTheme = (dark) => {
+					if (typeof document !== 'undefined') {
+						if (dark) {
+							document.documentElement.classList.add('dark');
+						} else {
+							document.documentElement.classList.remove('dark');
+						}
+					}
+				}
 
-          $("html, body").animate(
-            {
-              scrollTop: $(".skill-section").offset().top
-            },
-            1500
-          );
-        });
-        $("#project").click(function(event) {
-          event.preventDefault();
+				const toggleTheme = () => {
+					isDark.value = !isDark.value;
+					applyTheme(isDark.value);
+					if (typeof window !== 'undefined') {
+						localStorage.setItem('theme', isDark.value ? 'dark' : 'light');
+					}
+				}
 
-          $("html, body").animate(
-            {
-              scrollTop: $(".project-section").offset().top
-            },
-            1500
-          );
-        });
-      });
-    </script> -->
-	</body>
+				onMounted(() => {
+					// Initialize theme based on localStorage or system preference on load
+					if (typeof window !== 'undefined') {
+						const savedTheme = localStorage.getItem('theme');
+						if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+							isDark.value = true;
+						} else {
+							isDark.value = false;
+						}
+						applyTheme(isDark.value);
+					}
+				})
+
+				// --- Smooth Scrolling ---
+				const scrollTo = (id) => {
+					if (typeof window !== 'undefined') {
+						const element = document.getElementById(id);
+						if (element) {
+							element.scrollIntoView({ behavior: 'smooth' });
+						}
+					}
+				}
+
+				// --- Data ---
+				const projects = [
+					{
+						title: 'E-Systems',
+						description: 'Enterprise management system for complex employee onboarding, internal HR documentation, and workflow automation.',
+						tech: ['Vue.js', 'Nuxt 3', 'SASS', 'REST API'],
+						link: 'https://onboarding.elabram.com'
+					},
+					{
+						title: 'E-Staff',
+						description: 'Streamlined recruitment platform connecting employers with talent, featuring real-time status tracking and admin dashboards.',
+						tech: ['Vue 3', 'Tailwind CSS', 'State Management'],
+						link: 'https://estaff.elabram.com'
+					},
+					{
+						title: 'E-Jobs',
+						description: 'Public-facing job portal optimized for performance and search engines, delivering a seamless application experience.',
+						tech: ['Nuxt.js', 'SEO Optimization', 'Core Web Vitals'],
+						link: 'https://job.elabram.com/'
+					},
+					{
+						title: 'Elabram Website',
+						description: 'High-performance corporate landing page architected for rapid load times and clear communication of B2B services.',
+						tech: ['Frontend Architecture', 'HTML5', 'CSS3'],
+						link: 'https://elabram.com/'
+					}
+				]
+
+				return {
+					isDark,
+					toggleTheme,
+					scrollTo,
+					projects
+				}
+			}
+		}).mount('#app')
+	</script>
+</body>
+
 </html>
